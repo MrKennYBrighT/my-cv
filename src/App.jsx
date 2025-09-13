@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Layout from "./Layout/Layouts";
+import Layout from "./Layouts/Layout.jsx";
 import Home from "./pages/Home";
 import Skills from "./pages/Skills";
 import Projects from "./pages/Projects";
