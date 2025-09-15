@@ -9,17 +9,17 @@ const education = [
     details: "Studied Computer Science.",
   },
   {
+    title: "Professional Foundations",
+    institution: "ALX Africa",
+    year: "2025",
+    details: "Completed a 3-month program focused on core professional skills including communication, self-leadership, and project execution. Built a strong foundation for success in tech and business environments.",
+  },
+  {
     title: "Front-End Developer Certificate",
     institution: "ALX Africa",
     year: "2025",
     details: "Completed a rigorous program covering JavaScript, HTML, CSS5, Zustand, Tailwind CSS, React accessibility, and performance.",
-  },
-  {
-    title: "Responsive Web Design",
-    institution: "W3Schools",
-    year: "2025",
-    details: "Built multiple projects using HTML, CSS, and Flexbox/Grid.",
-  },
+  }
 ];
 
 export default function Education() {
