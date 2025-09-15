@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { FaEnvelope, FaPhoneAlt, FaMapMarkerAlt } from "react-icons/fa";
 import { useSectionObserver } from "../store/useSectionObserver";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function Contact() {
   useSectionObserver("contact");
@@ -12,14 +13,57 @@ export default function Contact() {
     message: "",
   });
 
+  const [darkMode, setDarkMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await fetch("https://formspree.io/f/xvgbvdaw", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        toast.success("Message sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      toast.error("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section
       id="contact"
-      className="py-20 px-4 bg-[#0a192f] text-white text-center"
+      className={`py-20 px-4 text-center ${
+        darkMode ? "bg-[#0a192f] text-white" : "bg-white text-gray-900"
+      } transition-colors duration-300`}
     >
+      <Toaster position="top-center" />
+
+      {/* Theme Toggle */}
+      <div className="mb-6 text-right max-w-3xl mx-auto">
+        <button
+          onClick={() => setDarkMode(!darkMode)}
+          className="px-4 py-2 text-sm rounded-md bg-blue-600 text-white hover:bg-blue-700 transition"
+        >
+          Toggle {darkMode ? "Light" : "Dark"} Mode
+        </button>
+      </div>
+
       <motion.h2
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -33,7 +77,9 @@ export default function Contact() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.5 }}
-        className="max-w-xl mx-auto text-gray-300 mb-12"
+        className={`max-w-xl mx-auto mb-12 ${
+          darkMode ? "text-gray-300" : "text-gray-600"
+        }`}
       >
         Whether you have a project in mind, a question, or just want to say hi—my inbox is always open.
       </motion.p>
@@ -49,15 +95,21 @@ export default function Contact() {
         >
           <div className="flex items-center gap-4">
             <FaEnvelope className="text-blue-400" size={20} />
-            <span className="text-sm text-gray-300">kehindeolorunda1000@gmail.com</span>
+            <span className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              kehindeolorunda1000@gmail.com
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <FaPhoneAlt className="text-blue-400" size={20} />
-            <span className="text-sm text-gray-300">+234 706 111 9792</span>
+            <span className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              +234 706 111 9792
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <FaMapMarkerAlt className="text-blue-400" size={20} />
-            <span className="text-sm text-gray-300">Ondo, Nigeria</span>
+            <span className={`text-sm ${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+              Ondo, Nigeria
+            </span>
           </div>
         </motion.div>
 
@@ -68,7 +120,7 @@ export default function Contact() {
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
           className="flex flex-col space-y-6"
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={handleSubmit}
         >
           {["name", "email", "message"].map((field) => (
             <div key={field} className="relative">
@@ -94,7 +146,11 @@ export default function Contact() {
                   name={field}
                   value={formData[field]}
                   onChange={handleChange}
-                  className="w-full bg-[#112240] text-white px-4 pt-6 pb-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-4 pt-6 pb-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    darkMode
+                      ? "bg-[#112240] text-white"
+                      : "bg-gray-100 text-gray-900"
+                  }`}
                   required
                 />
               ) : (
@@ -103,7 +159,11 @@ export default function Contact() {
                   rows="4"
                   value={formData[field]}
                   onChange={handleChange}
-                  className="w-full bg-[#112240] text-white px-4 pt-6 pb-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className={`w-full px-4 pt-6 pb-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    darkMode
+                      ? "bg-[#112240] text-white"
+                      : "bg-gray-100 text-gray-900"
+                  }`}
                   required
                 ></textarea>
               )}
@@ -117,10 +177,15 @@ export default function Contact() {
             }}
             whileTap={{ scale: 0.95 }}
             type="submit"
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition relative overflow-hidden"
+            disabled={loading}
+            className={`bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition relative overflow-hidden ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            <span className="relative z-10">Send Message</span>
-            <span className="absolute inset-0 bg-blue-500 opacity-0 hover:opacity-20 transition"></span>
+            <span className="relative z-10">
+              {loading ? "Sending..." : "Send Message"}
+            </span>
+            <span className="absolute inset-0 bg-blue-500 opacity-10 hover:opacity-20 transition"></span>
           </motion.button>
         </motion.form>
       </div>
