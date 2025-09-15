@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useNavStore } from "../store/navStore";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,36 +59,54 @@ const Navbar = () => {
         </ul>
 
         {/* Mobile Menu Toggle */}
-        <div className="md:hidden">
+        <div className="md:hidden z-50">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="text-white focus:outline-none"
+            className="text-white focus:outline-none transition-transform duration-300"
           >
             {isOpen ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile Nav */}
-      {isOpen && (
-        <ul className="md:hidden px-4 pb-4 space-y-4 text-sm font-medium bg-[#0a192f]">
-          {navLinks.map((link) => (
-            <li key={link.name}>
-              <a
-                href={link.href}
-                className={`block transition duration-300 ${
-                  activeSection === link.href.replace("#", "")
-                    ? "text-[#00BFFF] font-semibold"
-                    : "hover:text-[#00BFFF]"
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                {link.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* Mobile Nav Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.6 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black z-40"
+              onClick={() => setIsOpen(false)}
+            />
+
+            <motion.ul
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="fixed top-0 right-0 w-3/4 max-w-sm h-full bg-[#0a192f] z-50 px-6 pt-20 space-y-6 text-sm font-medium shadow-lg"
+            >
+              {navLinks.map((link) => (
+                <li key={link.name}>
+                  <a
+                    href={link.href}
+                    className={`block transition duration-300 ${
+                      activeSection === link.href.replace("#", "")
+                        ? "text-[#00BFFF] font-semibold"
+                        : "hover:text-[#00BFFF]"
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </motion.ul>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
