@@ -49,15 +49,16 @@ export default function Home() {
       </motion.p>
 
       <motion.a
-        href="/Kehinde Olorunda CV.pdf"
-        download
-        onClick={handleDownload}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="mt-8 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition"
-      >
-        Download CV
-      </motion.a>
+  href="/Kehinde-Olorunda-CV.pdf"
+  download="Kehinde-Olorunda-CV.pdf"
+  onClick={handleDownload}
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  className="mt-8 inline-block bg-blue-600 text-white px-6 py-3 rounded-lg shadow hover:bg-blue-700 transition"
+>
+  Download CV
+</motion.a>
+
     </section>
   );
 }
