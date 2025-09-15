@@ -49,7 +49,7 @@ export default function Home() {
       </motion.p>
 
       <motion.a
-        href="/Kenny_Frontend_Developer_CV.pdf"
+        href="/Kehinde Olorunda CV.pdf"
         download
         onClick={handleDownload}
         whileHover={{ scale: 1.05 }}
